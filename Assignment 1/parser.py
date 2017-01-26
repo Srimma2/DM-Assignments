@@ -61,7 +61,7 @@ def parse_parameter(filename = 'parameter-file.txt'):
     """
         Parses parameter file
         Input : Filename
-        Returns dictionary {
+        Returns dictionary{
             "MIS" : dict
             'SDC' : int
             'cannot_be_together': list of lists

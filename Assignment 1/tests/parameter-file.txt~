@@ -1,7 +1,0 @@
-MIS(10) = 0.43
-MIS(20) = 0.30
-MIS(30) = 0.41
-MIS(40) = 0.22
-SDC = 0.1
-cannot_be_together: {20, 30}, {10, 40}
-must-have: 20 or 40
