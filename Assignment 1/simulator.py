@@ -11,8 +11,7 @@ def generate_parameters(seed = None):
     param_dict_gen['MIS'] = dict()
 
     # random seed
-    if seed:
-        random.seed(seed)
+    random.seed(seed)
 
     # number of items
     item_num = random.randint(1,10)
@@ -107,7 +106,7 @@ def generate_input_file(transaction_db):
     return
 
 if __name__ == '__main__':
-    param_dict,items = generate_parameters()
+    param_dict,items = generate_parameters(0)
     transaction_db = generate_transactions(items)
     generate_parameter_file(param_dict)
     generate_input_file(transaction_db)
