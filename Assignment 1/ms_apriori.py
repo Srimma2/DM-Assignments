@@ -62,7 +62,5 @@ def MS_Apriori(transaction_db,param_dict,phi):
 
     return frequent_itemsets
 
-# if __name__ == "__main__":
-#     pass
 
     
