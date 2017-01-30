@@ -1,6 +1,42 @@
-import sys,os,re
+import sys,os,re,operator,itertools
 from collections import defaultdict
 
+#TODO - normalize the counts, 2nd level candidate gen should take arguement L
+# make sure that everything is passed into functions is sorted according to MIS values
+
+def lvl2_candidategen(itemset_dict,phi,param_dict):
+    c2 = [] #output
+    items = sorted(itemset_dict.items(), key=operator.itemgetter(1)) #sorted list of tuples of [(key,value)....]
+    setLen = len(items)
+    for i in range(0,setLen): #each item i in L
+        if items[i][1] >= param_dict['MIS'][items[i]]:
+            for h in range(i+1,setLen): # each item after i in L
+                if items[h][1] >= param_dict['MIS'][items[i]] and abs(items[h][1]-items[i][1]) <= phi:
+                    candidate = [items[i][0],items[h][0]] # {i,h}
+                    c2.append(candidate)
+    
+    return c2
+    
+def MS_candidategen(f,phi,param_dict):
+    ck = []
+    setLen = len(f) #lenght of f
+    eLen = len(f[0])-1 #length of the element
+    for i in range(0,setLen): #each item i in L
+            for h in range(i+1,setLen): #each item h after i
+                if f[i][:eLen] == f[h][:eLen] and (abs(param_dict['MIS'][f[i][eLen]]-param_dict['MIS'][f[h][eLen]]) <= phi):
+                    if param_dict['MIS'][f[i][eLen]] < param_dict['MIS'][f[h][eLen]]:
+                        c = list(f[i])
+                        c.append(f[h][eLen])
+                    else:
+                        c = list(f[h])
+                        c.append(f[i][eLen])
+                    ck.append(c)
+                    subsets = list(itertools.combinations(c,eLen)) #generate subsets of k-1
+                    for s in subsets:
+                        if c[0] in s or param_dict['MIS'][c[1]] == param_dict['MIS'][c[0]]:
+                            if s not in f:
+                                ck.remove(c) 
+    return ck
 
 def MS_Apriori(transaction_db,param_dict,phi):
     """
@@ -62,5 +98,3 @@ def MS_Apriori(transaction_db,param_dict,phi):
 
     return frequent_itemsets
 
-
-    
