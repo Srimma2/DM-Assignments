@@ -46,7 +46,7 @@ def MS_Apriori(transaction_db,param_dict,phi):
             # list of candidates(list)
             candidate_itemsets['C_'+str(k)] = lvl2_candidategen(itemset_dict,phi,param_dict)
         else:
-            candidate_itemsets['C_'+str(k)] = MS_candidategen(frequent_itemsets['F_'+str(k-1)],phi,frequent_itemsets['F_'+str(k)])
+            candidate_itemsets['C_'+str(k)] = MS_candidategen(frequent_itemsets['F_'+str(k-1)],phi,param_dict)
 
         for t in transaction_db:
             for c in candidate_itemsets['C_'+str(k)]:
