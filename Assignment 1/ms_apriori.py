@@ -24,20 +24,20 @@ def MS_candidategen(f,phi,param_dict):
     setLen = len(f) #length of f
     eLen = len(f[0])-1 #length of the element
     for i in range(0,setLen): #each item i in L
-            for h in range(i+1,setLen): #each item h after i
-                if f[i][:eLen] == f[h][:eLen] and (abs(param_dict['MIS'][f[i][eLen]]-param_dict['MIS'][f[h][eLen]]) <= phi):
-                    if param_dict['MIS'][f[i][eLen]] < param_dict['MIS'][f[h][eLen]]:
-                        c = list(f[i])
-                        c.append(f[h][eLen])
-                    else:
-                        c = list(f[h])
-                        c.append(f[i][eLen])
-                    ck.append(c)
-                    subsets = list(itertools.combinations(c,eLen)) #generate subsets of k-1
-                    for s in subsets:
-                        if c[0] in s or param_dict['MIS'][c[1]] == param_dict['MIS'][c[0]]:
-                            if s not in f:
-                                ck.remove(c) 
+        for h in range(i+1,setLen): #each item h after i
+            if f[i][:eLen] == f[h][:eLen] and (abs(param_dict['MIS'][f[i][eLen]]-param_dict['MIS'][f[h][eLen]]) <= phi):
+                if param_dict['MIS'][f[i][eLen]] < param_dict['MIS'][f[h][eLen]]:
+                    c = list(f[i])
+                    c.append(f[h][eLen])
+                else:
+                    c = list(f[h])
+                    c.append(f[i][eLen])
+                ck.append(c)
+                subsets = list(itertools.combinations(c,eLen)) #generate subsets of k-1
+                for s in subsets:
+                    if c[0] in s or param_dict['MIS'][c[1]] == param_dict['MIS'][c[0]]:
+                        if s not in f:
+                            ck.remove(c) 
     return ck
 
 def MS_Apriori(transaction_db,param_dict):
@@ -79,12 +79,13 @@ def MS_Apriori(transaction_db,param_dict):
         if k == 2:
             # remove items with support less than min of MIS
             L = {key:val for key,val in itemset_dict.iteritems() if val > param_dict['MIS'][M[0]]}
+            print "L is {}".format(L)
             # list of candidates(list)
             candidate_itemsets['C_'+str(k)] = lvl2_candidategen(L,phi,param_dict)
-            # print candidate_itemsets['C_' + str(k)]
         else:
             candidate_itemsets['C_'+str(k)] = MS_candidategen(frequent_itemsets['F_'+str(k-1)],phi,param_dict)
 
+        print "candidate C_{} is {}".format(k,candidate_itemsets['C_' + str(k)])
         for t in transaction_db:
             for c in candidate_itemsets['C_'+str(k)]:
                 # if c is contained in t
@@ -97,7 +98,7 @@ def MS_Apriori(transaction_db,param_dict):
                 #     itemset_dict[tuple(c[1:])] += 1/n
 
         # sort based on MIS
-        frequent_itemsets['F_'+str(k)] = [sorted(c,key = param_dict['MIS'].get) for c in candidate_itemsets['C_'+str(k)] if itemset_dict[tuple(c)] >= param_dict['MIS'][c[1]]]
+        frequent_itemsets['F_'+str(k)] = [sorted(c,key = param_dict['MIS'].get) for c in candidate_itemsets['C_'+str(k)] if itemset_dict[tuple(c)] >= param_dict['MIS'][c[0]]]
         k += 1
 
     return frequent_itemsets
@@ -106,4 +107,6 @@ def MS_Apriori(transaction_db,param_dict):
 if __name__ == "__main__":
     transaction_db = parse_input('input-data.txt')
     param_dict = parse_parameter('parameter-file.txt')
+    print transaction_db
+    print param_dict
     print MS_Apriori(transaction_db,param_dict)
