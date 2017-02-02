@@ -19,14 +19,14 @@ def lvl2_candidategen(itemset_dict,phi,param_dict):
     
     return c2
     
-def MS_candidategen(f,phi,param_dict):
+def MS_candidategen(f,phi,param_dict,itemset_dict):
     ck = []
     setLen = len(f) #length of f
     eLen = len(f[0])-1 #length of the element
     for i in range(0,setLen): #each item i in L
         for h in range(i+1,setLen): #each item h after i
-            if f[i][:eLen] == f[h][:eLen] and (abs(param_dict['MIS'][f[i][eLen]]-param_dict['MIS'][f[h][eLen]]) <= phi):
-                if param_dict['MIS'][f[i][eLen]] < param_dict['MIS'][f[h][eLen]]:
+            if f[i][:eLen] == f[h][:eLen] and (abs(itemset_dict[f[i][eLen]]-itemset_dict[f[h][eLen]]) <= phi):
+                if itemset_dict[f[i][eLen]] < itemset_dict[f[h][eLen]]:
                     c = list(f[i])
                     c.append(f[h][eLen])
                 else:
@@ -35,8 +35,11 @@ def MS_candidategen(f,phi,param_dict):
                 ck.append(c)
                 subsets = list(itertools.combinations(c,eLen)) #generate subsets of k-1
                 for s in subsets:
-                    if c[0] in s or param_dict['MIS'][c[1]] == param_dict['MIS'][c[0]]:
-                        if s not in f:
+                    s = list(s)
+                    if (c[0] in s) or (param_dict['MIS'][c[1]] == param_dict['MIS'][c[0]]):
+                        if s < f:
+                            pass
+                        else:
                             ck.remove(c) 
     return ck
 
@@ -83,7 +86,7 @@ def MS_Apriori(transaction_db,param_dict):
             # list of candidates(list)
             candidate_itemsets['C_'+str(k)] = lvl2_candidategen(L,phi,param_dict)
         else:
-            candidate_itemsets['C_'+str(k)] = MS_candidategen(frequent_itemsets['F_'+str(k-1)],phi,param_dict)
+            candidate_itemsets['C_'+str(k)] = MS_candidategen(frequent_itemsets['F_'+str(k-1)],phi,param_dict,itemset_dict)
 
         print "candidate C_{} is {}".format(k,candidate_itemsets['C_' + str(k)])
         for t in transaction_db:
