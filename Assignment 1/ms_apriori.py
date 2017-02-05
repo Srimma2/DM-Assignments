@@ -3,8 +3,6 @@ from collections import defaultdict
 
 from parser import *
 
-#TODO - normalize the counts, 2nd level candidate gen should take argument L
-# make sure that everything is passed into functions is sorted according to MIS values
 
 def lvl2_candidategen(itemset_dict,phi,param_dict):
     c2 = [] #output
@@ -43,6 +41,33 @@ def MS_candidategen(f,phi,param_dict,itemset_dict):
                             ck.remove(c) 
     return ck
 
+def post_processing(f,param_dict):
+    """
+        Processes must-have and cannot be together
+        Input : 
+            f : frequent itemset
+            param_dict : parameter dictionary
+    """
+    must_have = param_dict['must_have']
+    cannot_be_together = param_dict['cannot_be_together']
+
+    # must have 
+    tmp  = list()
+    for itemset in f:
+        if set(itemset).intersection(set(must_have)): 
+            tmp.append(itemset)
+
+    f = tmp
+
+    # cannot be together
+    tmp = f
+    for itemset in f:
+        for cbt in cannot_be_together:
+            if cbt in itemset:
+                tmp.remove(itemset)
+
+    return tmp
+
 def MS_Apriori(transaction_db,param_dict):
     """
         MS Apriori Algorithm
@@ -78,7 +103,7 @@ def MS_Apriori(transaction_db,param_dict):
 
     k = 2
 
-    while(frequent_itemsets['F_'+str(k-1)]):
+    while(frequent_itemsets.get('F_'+str(k-1))):
         if k == 2:
             # remove items with support less than min of MIS
             L = {key:val for key,val in itemset_dict.iteritems() if val > param_dict['MIS'][M[0]]}
@@ -87,6 +112,9 @@ def MS_Apriori(transaction_db,param_dict):
             candidate_itemsets['C_'+str(k)] = lvl2_candidategen(L,phi,param_dict)
         else:
             candidate_itemsets['C_'+str(k)] = MS_candidategen(frequent_itemsets['F_'+str(k-1)],phi,param_dict,itemset_dict)
+
+        if not candidate_itemsets['C_' + str(k)]:
+            break
 
         print "candidate C_{} is {}".format(k,candidate_itemsets['C_' + str(k)])
         for t in transaction_db:
@@ -101,8 +129,20 @@ def MS_Apriori(transaction_db,param_dict):
                 #     itemset_dict[tuple(c[1:])] += 1/n
 
         # sort based on MIS
-        frequent_itemsets['F_'+str(k)] = [sorted(c,key = param_dict['MIS'].get) for c in candidate_itemsets['C_'+str(k)] if itemset_dict[tuple(c)] >= param_dict['MIS'][c[0]]]
+        ans = [sorted(c,key = param_dict['MIS'].get) for c in candidate_itemsets['C_'+str(k)] if itemset_dict[tuple(c)] >= param_dict['MIS'][c[0]]]
+
+        if ans:
+            frequent_itemsets['F_' + str(k)] = ans
+
         k += 1
+
+    # frequent_itemsets = {key : value for key,value in frequent_itemsets.iteritems() if value}
+
+    # post processing
+    for k,v in frequent_itemsets.iteritems():
+        if v:
+            frequent_itemsets[k] = post_processing(v,param_dict)
+
 
     return frequent_itemsets
 
