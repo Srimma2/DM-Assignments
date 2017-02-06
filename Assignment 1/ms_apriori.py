@@ -77,8 +77,10 @@ def MS_Apriori(transaction_db,param_dict):
                         {MIS,SDC,cannot_be_together,must_have}
         Returns frequent_itemsets : dict
     """
-    # contains all itemset with their count initialized to 0; key = itemset(tuple), value = list
+    # contains all itemset with their count initialized to 0; key = itemset(tuple), value = count
     itemset_dict = defaultdict(lambda : 0.0)
+	# does tail count; key = itemset(tuple), value = count
+	tail_count = defaultdict(lambda : 0.0)
     # lists frequent itemsets (list) at each level; key = F_<level>, value = list
     frequent_itemsets = dict()
     # lists candidates (list) at each level; key = C_<level>, value = list
@@ -123,10 +125,9 @@ def MS_Apriori(transaction_db,param_dict):
                 if set(c) < set(t):
                     # normalize
                     itemset_dict[tuple(c)] += 1/n
-                # if c without first element is contained in t
-                # for rule generation
-                # if set(c[1:]) < set(t):
-                #     itemset_dict[tuple(c[1:])] += 1/n
+                # if c without first element is contained in t, used for rule generation
+                if set(c[1:]) < set(t):
+                    tail_count[tuple(c)] += 1/n
 
         # sort based on MIS
         ans = [sorted(c,key = param_dict['MIS'].get) for c in candidate_itemsets['C_'+str(k)] if itemset_dict[tuple(c)] >= param_dict['MIS'][c[0]]]
