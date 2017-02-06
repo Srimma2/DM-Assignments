@@ -125,7 +125,7 @@ def MS_Apriori(transaction_db,param_dict):
                 if set(c) < set(t):
                     # normalize
                     itemset_dict[tuple(c)] += 1/n
-                # if c without first element is contained in t, used for rule generation
+                # perform tail count, used for rule generation
                 if set(c[1:]) < set(t):
                     tail_count[tuple(c)] += 1/n
 
