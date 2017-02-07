@@ -4,7 +4,7 @@ from collections import defaultdict
 from parser import *
 
 
-def lvl2_candidategen(itemset_dict,phi,param_dict):
+def lvl2_candidategen(itemset_dict,phi,param_dict,n):
     c2 = [] #output
     items = sorted(itemset_dict.items(), key=operator.itemgetter(1)) #sorted list of tuples of [(key,value)....]
     setLen = len(items)
@@ -17,7 +17,7 @@ def lvl2_candidategen(itemset_dict,phi,param_dict):
     
     return c2
     
-def MS_candidategen(f,phi,param_dict,itemset_dict):
+def MS_candidategen(f,phi,param_dict,itemset_dict,n):
     ck = []
     setLen = len(f) #length of f
     eLen = len(f[0])-1 #length of the element
@@ -98,10 +98,10 @@ def MS_Apriori(transaction_db,param_dict):
     for t in transaction_db:
         for item in M:
             if item in t:
-                itemset_dict[item] += 1/n
+                itemset_dict[item] += 1
 
     # frequent itemset
-    frequent_itemsets['F_1'] = [[key] for key,val in itemset_dict.iteritems() if val > param_dict['MIS'][key]]
+    frequent_itemsets['F_1'] = [[key] for key,val in itemset_dict.iteritems() if val/n > param_dict['MIS'][key]]
 
     k = 2
 
@@ -111,9 +111,9 @@ def MS_Apriori(transaction_db,param_dict):
             L = {key:val for key,val in itemset_dict.iteritems() if val > param_dict['MIS'][M[0]]}
             print "L is {}".format(L)
             # list of candidates(list)
-            candidate_itemsets['C_'+str(k)] = lvl2_candidategen(L,phi,param_dict)
+            candidate_itemsets['C_'+str(k)] = lvl2_candidategen(L,phi,param_dict,n)
         else:
-            candidate_itemsets['C_'+str(k)] = MS_candidategen(frequent_itemsets['F_'+str(k-1)],phi,param_dict,itemset_dict)
+            candidate_itemsets['C_'+str(k)] = MS_candidategen(frequent_itemsets['F_'+str(k-1)],phi,param_dict,itemset_dict,n)
 
         if not candidate_itemsets['C_' + str(k)]:
             break
@@ -124,10 +124,10 @@ def MS_Apriori(transaction_db,param_dict):
                 # if c is contained in t
                 if set(c) < set(t):
                     # normalize
-                    itemset_dict[tuple(c)] += 1/n
+                    itemset_dict[tuple(c)] += 1
                 # perform tail count, used for rule generation
                 if set(c[1:]) < set(t):
-                    tail_count[tuple(c)] += 1/n
+                    tail_count[tuple(c)] += 1
 
         # sort based on MIS
         ans = [sorted(c,key = param_dict['MIS'].get) for c in candidate_itemsets['C_'+str(k)] if itemset_dict[tuple(c)] >= param_dict['MIS'][c[0]]]
@@ -145,7 +145,7 @@ def MS_Apriori(transaction_db,param_dict):
             frequent_itemsets[k] = post_processing(v,param_dict)
 
 
-    return frequent_itemsets
+    return frequent_itemsets,tail_count
 
 
 if __name__ == "__main__":
