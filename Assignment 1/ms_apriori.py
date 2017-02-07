@@ -79,8 +79,8 @@ def MS_Apriori(transaction_db,param_dict):
     """
     # contains all itemset with their count initialized to 0; key = itemset(tuple), value = count
     itemset_dict = defaultdict(lambda : 0.0)
-	# does tail count; key = itemset(tuple), value = count
-	tail_count = defaultdict(lambda : 0.0)
+    # does tail count; key = itemset(tuple), value = count
+    tail_count = defaultdict(lambda : 0.0)
     # lists frequent itemsets (list) at each level; key = F_<level>, value = list
     frequent_itemsets = dict()
     # lists candidates (list) at each level; key = C_<level>, value = list
