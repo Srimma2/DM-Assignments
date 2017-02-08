@@ -151,7 +151,7 @@ def MS_Apriori(transaction_db,param_dict):
             frequent_itemsets[k] = post_processing(v,param_dict)
 
 
-    return frequent_itemsets,tail_count
+    return frequent_itemsets,tail_count, itemset_dict
 
 
 if __name__ == "__main__":
