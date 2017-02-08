@@ -108,7 +108,7 @@ def MS_Apriori(transaction_db,param_dict):
     while(frequent_itemsets.get('F_'+str(k-1))):
         if k == 2:
             # remove items with support less than min of MIS
-            L = {key:val for key,val in itemset_dict.iteritems() if val > param_dict['MIS'][M[0]]}
+            L = {key:val for key,val in itemset_dict.iteritems() if val/n > param_dict['MIS'][M[0]]}
             print "L is {}".format(L)
             # list of candidates(list)
             candidate_itemsets['C_'+str(k)] = lvl2_candidategen(L,phi,param_dict,n)
@@ -130,7 +130,7 @@ def MS_Apriori(transaction_db,param_dict):
                     tail_count[tuple(c)] += 1
 
         # sort based on MIS
-        ans = [sorted(c,key = param_dict['MIS'].get) for c in candidate_itemsets['C_'+str(k)] if itemset_dict[tuple(c)] >= param_dict['MIS'][c[0]]]
+        ans = [sorted(c,key = param_dict['MIS'].get) for c in candidate_itemsets['C_'+str(k)] if itemset_dict[tuple(c)]/n >= param_dict['MIS'][c[0]]]
 
         if ans:
             frequent_itemsets['F_' + str(k)] = ans
