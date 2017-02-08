@@ -1,20 +1,15 @@
-Frequent 1-itemsets
+Frequent1-itemsets
 
-	5 : {20}
-	6 : {30}
+	6.0:{20}
 
-	Total number of freuqent 1-itemsets = 2
+	Total number of frequent 1-itemsets = 1
 
+Frequent2-itemsets
 
-Frequent 2-itemsets
+	5.0:{80, 20}
+Tailcount = 6.0
+	2.0:{90, 50}
+Tailcount = 2.0
 
-	3 : {30, 80}
-Tailcount = 6
-	4 : {40, 50}
-Tailcount = 5
-	5 : {30, 80}
-Tailcount = 7
+	Total number of frequent 2-itemsets = 2
 
-	Total number of freuqent 2-itemsets = 3
-
-....
