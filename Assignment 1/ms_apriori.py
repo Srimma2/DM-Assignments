@@ -6,12 +6,18 @@ from parser import *
 
 def lvl2_candidategen(itemset_dict,phi,param_dict,n):
     c2 = [] #output
-    items = sorted(itemset_dict.items(), key=operator.itemgetter(1)) #sorted list of tuples of [(key,value)....]
+    L_dic = {}
+    #sort by mis
+    Lkeys = itemset_dict.keys()
+    for i in range(0,len(Lkeys)):
+        L_dic[Lkeys[i]] = param_dict['MIS'][Lkeys[i]]
+   
+    items = sorted(L_dic.items(), key=operator.itemgetter(1)) #sorted list of tuples of [(key,value)....]
     setLen = len(items)
     for i in range(0,setLen): #each item i in L
-        if items[i][1] >= param_dict['MIS'][items[i][0]]:
+        if itemset_dict[items[i][0]]/n >= param_dict['MIS'][items[i][0]]:
             for h in range(i+1,setLen): # each item after i in L
-                if items[h][1] >= param_dict['MIS'][items[i][0]] and abs(items[h][1]-items[i][1]) <= phi:
+                if itemset_dict[items[h][0]]/n >= param_dict['MIS'][items[i][0]] and abs(itemset_dict[items[h][0]]/n-itemset_dict[items[i][0]]/n) <= phi:
                     candidate = [items[i][0],items[h][0]] # {i,h}
                     c2.append(candidate)
     
@@ -23,7 +29,7 @@ def MS_candidategen(f,phi,param_dict,itemset_dict,n):
     eLen = len(f[0])-1 #length of the element
     for i in range(0,setLen): #each item i in L
         for h in range(i+1,setLen): #each item h after i
-            if f[i][:eLen] == f[h][:eLen] and (abs(itemset_dict[f[i][eLen]]-itemset_dict[f[h][eLen]]) <= phi):
+            if f[i][:eLen] == f[h][:eLen] and (abs(itemset_dict[f[i][eLen]]/n-itemset_dict[f[h][eLen]]/n) <= phi):
                 if itemset_dict[f[i][eLen]] < itemset_dict[f[h][eLen]]:
                     c = list(f[i])
                     c.append(f[h][eLen])
@@ -149,8 +155,8 @@ def MS_Apriori(transaction_db,param_dict):
 
 
 if __name__ == "__main__":
-    transaction_db = parse_input('input-data.txt')
-    param_dict = parse_parameter('parameter-file.txt')
+    transaction_db = parse_input('tr2.txt')
+    param_dict = parse_parameter('pr2.txt')
     print transaction_db
     print param_dict
     print MS_Apriori(transaction_db,param_dict)
