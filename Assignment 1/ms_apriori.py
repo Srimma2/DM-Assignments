@@ -69,7 +69,7 @@ def post_processing(f,param_dict):
     tmp = f
     for itemset in f:
         for cbt in cannot_be_together:
-            if cbt in itemset:
+            if set(cbt) in set(itemset):
                 tmp.remove(itemset)
 
     return tmp
