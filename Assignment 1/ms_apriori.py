@@ -30,7 +30,7 @@ def MS_candidategen(f,phi,param_dict,itemset_dict,n):
     for i in range(0,setLen): #each item i in L
         for h in range(i+1,setLen): #each item h after i
             if f[i][:eLen] == f[h][:eLen] and (abs(itemset_dict[f[i][eLen]]/n-itemset_dict[f[h][eLen]]/n) <= phi):
-                if itemset_dict[f[i][eLen]] < itemset_dict[f[h][eLen]]:
+                if param_dict['MIS'][f[i][eLen]] < param_dict['MIS'][f[h][eLen]]:
                     c = list(f[i])
                     c.append(f[h][eLen])
                 else:
