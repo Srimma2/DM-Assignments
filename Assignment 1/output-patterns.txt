@@ -6,7 +6,7 @@ Frequent1-itemsets
 
 Frequent2-itemsets
 
-	5.0:{80, 20}
+	6.0:{80, 20}
 Tailcount = 6.0
 	2.0:{90, 50}
 Tailcount = 2.0

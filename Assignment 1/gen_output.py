@@ -1,16 +1,16 @@
 from ms_apriori import *
 from parser import *
-import re
+import re,sys
 
 
-def gen_output(filename = 'output-patterns.txt'):
+def gen_output(input_file = 'input-data.txt',parameter_file = 'parameter-file.txt',output_file = 'output-patterns.txt'):
     """
         Output generator
     """
-    transaction_db = parse_input('input-data.txt')
-    param_dict = parse_parameter('parameter-file.txt')
+    transaction_db = parse_input(input_file)
+    param_dict = parse_parameter(parameter_file)
     frequent_itemsets,tail_count,itemset_dict = MS_Apriori(transaction_db,param_dict)
-    with open(filename,'w') as f:
+    with open(output_file,'w') as f:
         for key,val in frequent_itemsets.iteritems():
             if not val:
                 return
@@ -35,4 +35,4 @@ def gen_output(filename = 'output-patterns.txt'):
 
 
 if __name__ == '__main__':
-    gen_output()
+    gen_output(input_file = sys.argv[1], parameter_file = sys.argv[2],output_file = sys.argv[3])

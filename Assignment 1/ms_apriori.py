@@ -69,7 +69,7 @@ def post_processing(f,param_dict):
     tmp = f
     for itemset in f:
         for cbt in cannot_be_together:
-            if set(cbt) in set(itemset):
+            if set(cbt) <= set(itemset):
                 tmp.remove(itemset)
 
     return tmp
@@ -115,7 +115,7 @@ def MS_Apriori(transaction_db,param_dict):
         if k == 2:
             # remove items with support less than min of MIS
             L = {key:val for key,val in itemset_dict.iteritems() if val/n > param_dict['MIS'][M[0]]}
-            print "L is {}".format(L)
+            # print "L is {}".format(L)
             # list of candidates(list)
             candidate_itemsets['C_'+str(k)] = lvl2_candidategen(L,phi,param_dict,n)
         else:
@@ -124,15 +124,15 @@ def MS_Apriori(transaction_db,param_dict):
         if not candidate_itemsets['C_' + str(k)]:
             break
 
-        print "candidate C_{} is {}".format(k,candidate_itemsets['C_' + str(k)])
+        # print "candidate C_{} is {}".format(k,candidate_itemsets['C_' + str(k)])
         for t in transaction_db:
             for c in candidate_itemsets['C_'+str(k)]:
                 # if c is contained in t
-                if set(c) < set(t):
+                if set(c) <= set(t):
                     # normalize
                     itemset_dict[tuple(c)] += 1
                 # perform tail count, used for rule generation
-                if set(c[1:]) < set(t):
+                if set(c[1:]) <= set(t):
                     tail_count[tuple(c)] += 1
 
         # sort based on MIS
@@ -158,4 +158,3 @@ if __name__ == "__main__":
     transaction_db = parse_input('input-data.txt')
     param_dict = parse_parameter('parameter-file.txt')
     frequent_itemsets,tail_count,itemset_dict = MS_Apriori(transaction_db,param_dict)
-    print itemset_dict[20]
