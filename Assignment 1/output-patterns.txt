@@ -10,8 +10,6 @@ Frequent 2-itemsets
 Tailcount = 1.0
 	1.0:{784, 405}
 Tailcount = 1.0
-	1.0:{784, 583}
-Tailcount = 2.0
 	1.0:{784, 304}
 Tailcount = 2.0
 	1.0:{259, 405}
@@ -25,7 +23,7 @@ Tailcount = 1.0
 	1.0:{259, 304}
 Tailcount = 2.0
 
-	Total number of frequent 2-itemsets = 9
+	Total number of frequent 2-itemsets = 8
 
 Frequent 3-itemsets
 
@@ -33,27 +31,17 @@ Frequent 3-itemsets
 Tailcount = 1.0
 	1.0:{784, 259, 511}
 Tailcount = 1.0
-	1.0:{784, 259, 583}
-Tailcount = 1.0
 	1.0:{784, 259, 758}
 Tailcount = 1.0
 	1.0:{784, 259, 304}
 Tailcount = 1.0
 	1.0:{784, 405, 511}
 Tailcount = 1.0
-	1.0:{784, 405, 583}
-Tailcount = 1.0
 	1.0:{784, 405, 758}
 Tailcount = 1.0
 	1.0:{784, 405, 304}
 Tailcount = 1.0
-	1.0:{784, 511, 583}
-Tailcount = 2.0
 	1.0:{784, 511, 304}
-Tailcount = 2.0
-	1.0:{784, 583, 758}
-Tailcount = 1.0
-	1.0:{784, 583, 304}
 Tailcount = 2.0
 	1.0:{784, 758, 304}
 Tailcount = 1.0
@@ -78,49 +66,29 @@ Tailcount = 2.0
 	1.0:{259, 758, 304}
 Tailcount = 1.0
 
-	Total number of frequent 3-itemsets = 24
+	Total number of frequent 3-itemsets = 19
 
 Frequent 4-itemsets
 
 	1.0:{784, 259, 405, 511}
 Tailcount = 1.0
-	1.0:{784, 259, 405, 583}
-Tailcount = 1.0
 	1.0:{784, 259, 405, 758}
 Tailcount = 1.0
 	1.0:{784, 259, 405, 304}
-Tailcount = 1.0
-	1.0:{784, 259, 511, 583}
 Tailcount = 1.0
 	1.0:{784, 259, 511, 758}
 Tailcount = 1.0
 	1.0:{784, 259, 511, 304}
 Tailcount = 1.0
-	1.0:{784, 259, 583, 758}
-Tailcount = 1.0
-	1.0:{784, 259, 583, 304}
-Tailcount = 1.0
 	1.0:{784, 259, 758, 304}
-Tailcount = 1.0
-	1.0:{784, 405, 511, 583}
 Tailcount = 1.0
 	1.0:{784, 405, 511, 758}
 Tailcount = 1.0
 	1.0:{784, 405, 511, 304}
 Tailcount = 1.0
-	1.0:{784, 405, 583, 758}
-Tailcount = 1.0
-	1.0:{784, 405, 583, 304}
-Tailcount = 1.0
 	1.0:{784, 405, 758, 304}
 Tailcount = 1.0
-	1.0:{784, 511, 583, 758}
-Tailcount = 1.0
-	1.0:{784, 511, 583, 304}
-Tailcount = 2.0
 	1.0:{784, 511, 758, 304}
-Tailcount = 1.0
-	1.0:{784, 583, 758, 304}
 Tailcount = 1.0
 	1.0:{259, 405, 511, 583}
 Tailcount = 1.0
@@ -143,39 +111,19 @@ Tailcount = 1.0
 	1.0:{259, 583, 758, 304}
 Tailcount = 1.0
 
-	Total number of frequent 4-itemsets = 30
+	Total number of frequent 4-itemsets = 20
 
 Frequent 5-itemsets
 
-	1.0:{784, 259, 405, 511, 583}
-Tailcount = 1.0
 	1.0:{784, 259, 405, 511, 758}
 Tailcount = 1.0
 	1.0:{784, 259, 405, 511, 304}
 Tailcount = 1.0
-	1.0:{784, 259, 405, 583, 758}
-Tailcount = 1.0
-	1.0:{784, 259, 405, 583, 304}
-Tailcount = 1.0
 	1.0:{784, 259, 405, 758, 304}
-Tailcount = 1.0
-	1.0:{784, 259, 511, 583, 758}
-Tailcount = 1.0
-	1.0:{784, 259, 511, 583, 304}
 Tailcount = 1.0
 	1.0:{784, 259, 511, 758, 304}
 Tailcount = 1.0
-	1.0:{784, 259, 583, 758, 304}
-Tailcount = 1.0
-	1.0:{784, 405, 511, 583, 758}
-Tailcount = 1.0
-	1.0:{784, 405, 511, 583, 304}
-Tailcount = 1.0
 	1.0:{784, 405, 511, 758, 304}
-Tailcount = 1.0
-	1.0:{784, 405, 583, 758, 304}
-Tailcount = 1.0
-	1.0:{784, 511, 583, 758, 304}
 Tailcount = 1.0
 	1.0:{259, 405, 511, 583, 758}
 Tailcount = 1.0
@@ -188,31 +136,14 @@ Tailcount = 1.0
 	1.0:{259, 511, 583, 758, 304}
 Tailcount = 1.0
 
-	Total number of frequent 5-itemsets = 20
+	Total number of frequent 5-itemsets = 10
 
 Frequent 6-itemsets
 
-	1.0:{784, 259, 405, 511, 583, 758}
-Tailcount = 1.0
-	1.0:{784, 259, 405, 511, 583, 304}
-Tailcount = 1.0
 	1.0:{784, 259, 405, 511, 758, 304}
-Tailcount = 1.0
-	1.0:{784, 259, 405, 583, 758, 304}
-Tailcount = 1.0
-	1.0:{784, 259, 511, 583, 758, 304}
-Tailcount = 1.0
-	1.0:{784, 405, 511, 583, 758, 304}
 Tailcount = 1.0
 	1.0:{259, 405, 511, 583, 758, 304}
 Tailcount = 1.0
 
-	Total number of frequent 6-itemsets = 7
-
-Frequent 7-itemsets
-
-	1.0:{784, 259, 405, 511, 583, 758, 304}
-Tailcount = 1.0
-
-	Total number of frequent 7-itemsets = 1
+	Total number of frequent 6-itemsets = 2
 

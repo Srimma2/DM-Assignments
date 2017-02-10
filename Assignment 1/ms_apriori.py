@@ -63,16 +63,14 @@ def post_processing(f,param_dict):
         if set(itemset).intersection(set(must_have)): 
             tmp.append(itemset)
 
-    f = tmp
-    
+    f = tmp[:]
 
     # cannot be together
-    tmp = f
     for itemset in f:
         for cbt in cannot_be_together:
             if set(cbt) <= set(itemset):
                 tmp.remove(itemset)
-    
+   
     return tmp
 
 def MS_Apriori(transaction_db,param_dict):
@@ -146,11 +144,11 @@ def MS_Apriori(transaction_db,param_dict):
 
         frequent_itemsets = {key : value for key,value in frequent_itemsets.iteritems() if value}
 
-    # print sorted(frequent_itemsets.iteritems())
     # post processing
     for k,v in frequent_itemsets.iteritems():
         if v:
             frequent_itemsets[k] = post_processing(v,param_dict)
+
 
     return frequent_itemsets,tail_count, itemset_dict
 
