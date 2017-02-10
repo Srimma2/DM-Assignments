@@ -85,8 +85,3 @@ def parse_parameter(filename = 'parameter-file.txt'):
 
     return param_dict
 
-
-# if __name__ == "__main__":
-#     transaction_db = parse_input()
-#     parse_parameter()
-

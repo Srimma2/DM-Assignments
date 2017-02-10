@@ -153,8 +153,3 @@ def MS_Apriori(transaction_db,param_dict):
 
     return frequent_itemsets,tail_count, itemset_dict
 
-
-if __name__ == "__main__":
-    transaction_db = parse_input('input-data.txt')
-    param_dict = parse_parameter('parameter-file.txt')
-    frequent_itemsets,tail_count,itemset_dict = MS_Apriori(transaction_db,param_dict)
