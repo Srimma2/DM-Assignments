@@ -1,5 +1,5 @@
 Authors: Jason Deutsch and 	Sreeraj Rimmalapud
-Project 1: MSapriori algorithm implementation
+Project 1: MS Apriori algorithm implementation
 
 - This program performs the MSapriori algorithm and is written in Python.
 
