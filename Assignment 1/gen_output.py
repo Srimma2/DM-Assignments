@@ -10,6 +10,7 @@ def gen_output(input_file = 'input-data.txt',parameter_file = 'parameter-file.tx
     transaction_db = parse_input(input_file)
     param_dict = parse_parameter(parameter_file)
     frequent_itemsets,tail_count,itemset_dict = MS_Apriori(transaction_db,param_dict)
+
     with open(output_file,'w') as f:
         for key,val in sorted(frequent_itemsets.iteritems()):
             # check if list is empty
@@ -26,13 +27,13 @@ def gen_output(input_file = 'input-data.txt',parameter_file = 'parameter-file.tx
                 if len(itemset) == 1:
                     count = itemset_dict[itemset[0]]
                 else:
-                    count = itemset_dict[tuple(itemset)]
-                if count == 0:
+                    count = itemset_dict[frozenset(itemset)]
+                if count == 0.0:
                     continue
                 val_counter += 1
                 f.write('\t' + str(count) + ':' + tmp + '\n')
                 if key.split('F_')[1] != '1':
-                    f.write('Tailcount = ' + str(tail_count[tuple(itemset)]))
+                    f.write('Tailcount = ' + str(tail_count[frozenset(itemset)]))
                     f.write('\n')
         
             f.write('\n\t' + 'Total number of frequent ' + key.split('F_')[1] + '-itemsets = ' + str(val_counter))

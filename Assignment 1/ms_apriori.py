@@ -64,6 +64,7 @@ def post_processing(f,param_dict):
             tmp.append(itemset)
 
     f = tmp
+    
 
     # cannot be together
     tmp = f
@@ -71,7 +72,7 @@ def post_processing(f,param_dict):
         for cbt in cannot_be_together:
             if set(cbt) <= set(itemset):
                 tmp.remove(itemset)
-
+    
     return tmp
 
 def MS_Apriori(transaction_db,param_dict):
@@ -130,26 +131,26 @@ def MS_Apriori(transaction_db,param_dict):
                 # if c is contained in t
                 if set(c) <= set(t):
                     # normalize
-                    itemset_dict[tuple(c)] += 1
+                    itemset_dict[frozenset(c)] += 1.0
                 # perform tail count, used for rule generation
                 if set(c[1:]) <= set(t):
-                    tail_count[tuple(c)] += 1
+                    tail_count[frozenset(c)] += 1.0
 
         # sort based on MIS
-        ans = [sorted(c,key = param_dict['MIS'].get) for c in candidate_itemsets['C_'+str(k)] if itemset_dict[tuple(c)]/n >= param_dict['MIS'][c[0]]]
+        ans = [sorted(c,key = param_dict['MIS'].get) for c in candidate_itemsets['C_'+str(k)] if itemset_dict[frozenset(c)]/n >= param_dict['MIS'][c[0]]]
 
         if ans:
             frequent_itemsets['F_' + str(k)] = ans
 
         k += 1
 
-    # frequent_itemsets = {key : value for key,value in frequent_itemsets.iteritems() if value}
+        frequent_itemsets = {key : value for key,value in frequent_itemsets.iteritems() if value}
 
+    # print sorted(frequent_itemsets.iteritems())
     # post processing
     for k,v in frequent_itemsets.iteritems():
         if v:
             frequent_itemsets[k] = post_processing(v,param_dict)
-
 
     return frequent_itemsets,tail_count, itemset_dict
 
