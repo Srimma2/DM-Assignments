@@ -142,6 +142,7 @@ def MS_Apriori(transaction_db,param_dict):
 
         k += 1
 
+
         frequent_itemsets = {key : value for key,value in frequent_itemsets.iteritems() if value}
 
     # post processing
