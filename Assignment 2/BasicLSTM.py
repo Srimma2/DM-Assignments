@@ -1,0 +1,327 @@
+# -*- coding: utf-8 -*-
+"""
+Spyder Editor
+
+This is a temporary script file.
+"""
+import sys,os
+import numpy as np
+import keras
+import pandas as pd
+import re
+
+
+
+from keras.preprocessing.sequence import pad_sequences
+from keras.layers import Dense, Input, Flatten
+from keras.layers import Conv1D, MaxPooling1D, Embedding
+from keras.models import Model
+from keras.models import Sequential
+from keras.layers import LSTM
+
+from nltk.corpus import stopwords
+from nltk import word_tokenize          
+from nltk.stem import WordNetLemmatizer
+from nltk.stem.snowball import SnowballStemmer
+
+from sklearn.metrics import classification_report,accuracy_score
+from sklearn.cross_validation import cross_val_score,cross_val_predict
+
+
+MAX_SEQUENCE_LENGTH = 30 #max number of sentences in a message
+MAX_NB_WORDS = 20000 #cap vocabulary
+GLOVE_FILE = '/Users/nookiebiz4/Downloads/glove/glove.twitter.27B.50d.txt'
+EMBEDDING_DIM = 50 #size of word vector 
+TWITTER_FILE = '/Users/nookiebiz4/583_proj2/training-Obama-Romney-tweets.xlsx'
+JAR_FILE = '/Users/nookiebiz4/Downloads/stanford-postagger-2016-10-31/stanford-postagger.jar'
+MODEL_FILE = '/Users/nookiebiz4/Downloads/stanford-postagger-2016-10-31/models/english-left3words-distsim.tagger'
+
+
+# read the data
+obama_data = pd.read_excel(TWITTER_FILE,names = ['date','time','text','sentiment'],parse_cols = 4,sheetname = 'Obama')
+romney_data = pd.read_excel(TWITTER_FILE,names = ['date','time','text','sentiment'],parse_cols = 4,sheetname = 'Romney')
+
+def get_data(data):
+    """ get and clean the data """
+    data = data.iloc[1:]
+    data['text'] = data['text'].values.astype('unicode')
+    data['date'] = data['date'].values.astype('str')
+    data['time'] = data['time'].values.astype('unicode')
+    # remove rows with mixed sentiment
+    data = data[data['sentiment'] < 2]
+    data.index = range(len(data))
+    
+    return data
+
+obama_data = get_data(obama_data)
+romney_data = get_data(romney_data)
+    
+print obama_data.head()
+print romney_data.head()
+
+
+
+
+emoticon_dictionary = {':)':' smileyface ','(:':' smileyface ','XD': ' happyface ',':D': ' smileyface ','>.<':' smileyface ',':-)':' smileyface ',';)':' winkface ',';D':' winkface ',':\'(':' cryingface '}
+
+emoticons = [':\)','\(:','XD',':D','>\.<',':-\)',';\)',';D',':\'\(']
+
+emoticon_pattern = re.compile(r'(' + '\s+|\s+'.join(emoticons) + r')')
+
+# convert emoticons to words
+def emoticon_converter(x):
+    x = emoticon_pattern.sub(lambda i : emoticon_dictionary[i.group().replace(' ','')],x)   
+    return x
+
+obama_data['text'] = obama_data['text'].apply(emoticon_converter)
+romney_data['text'] = romney_data['text'].apply(emoticon_converter)
+
+# http://stackoverflow.com/questions/8870261/how-to-split-text-without-spaces-into-list-of-words
+# convert hashtags into words
+def separate_hashtag(x):
+    for i in range(0,len(x)):
+        hashtags = re.findall(r"#(\w+)", x[i])
+        for words in hashtags:
+            x[i] = re.sub('#'+ words,split_hashtag(words.lower()),x[i])
+    return x
+
+#obama_data['text'] = separate_hashtag(obama_data['text'])
+#romney_data['text'] = separate_hashtag(romney_data['text'])
+
+
+
+
+
+
+# remove punctuations
+punc = ['\:','\;','\?','\$','\.','\(','\)','\#',',','-']
+cond_1 = re.compile('|'.join(punc))
+# remove tags
+tags = ['<a>','</a>','<e>','</e>']
+cond_2 = re.compile("|".join(tags))
+
+def preprocess(data):
+    """ preprocess the data"""
+    # remove punctuations
+    data = data.apply(lambda x : re.sub(cond_1,'',x))
+    # remove tags
+    data = data.apply(lambda x : re.sub(cond_2,'',x))
+    # remove users
+    data = data.apply(lambda x : re.sub(r'\@\s?\w+','',x))
+    # remove hypertext 
+    data = data.apply(lambda x : re.sub(r'http://\w+','',x))
+    # remove digits
+    data = data.apply(lambda x : re.sub(r'[0-9]+','',x))
+    # convert to ascii
+    data = data.apply(lambda x: x.encode('utf-8'))
+    
+    return data
+
+obama_data['text'] = preprocess(obama_data['text'])
+romney_data['text'] = preprocess(romney_data['text'])
+
+
+def process_time(data):
+    """ processes time """
+
+    def extract_date(pattern,string):
+        temp = re.match(pattern,string)
+        if temp:
+            return temp.group(1)
+        else:
+            return string
+    # clean date
+    date_format_1 = re.compile('\d+/(\d{2})/\d+')
+    date_format_2 = re.compile('\d+\-\d+\-(\d{2})')
+    date_format_3 = re.compile('(\d{2})\-[a-zA-Z]+\-\d+')
+    date_format = [date_format_1] + [date_format_2] + [date_format_3]
+
+    # remove whitespace
+    data['date'] = data['date'].apply(lambda x : x.replace(' ',''))
+
+    for i in date_format:
+        data['date'] = data['date'].apply(lambda x: extract_date(i,x))
+
+    def converter(first,second):
+        if first == 'AM':
+            return second
+        else:
+            val = re.findall('(\d{1,2})',second)[0]
+            if int(val) > 12:
+                val = str(int(val) + 12)
+            return re.sub('\d{1,2}',val,second,1)
+
+    def extract_time(pattern,string):
+
+        temp = re.match(pattern,string)
+        if temp:
+            first = temp.group(1)
+            second = temp.group(2)
+            third = temp.group(3)
+
+            if first is None and third is None:
+                return second
+
+            if first == 'AM' or first == 'PM':
+                return converter(first,second)
+            else:
+                return converter(third,second)
+
+    # clean time
+    time_format_1 = re.compile('(AM|PM)?\s?(\d{1,2}:\d{1,2}:\d{1,2})\s?(AM|PM)?')
+
+    # remove whitespace
+    data['time'] = data['time'].apply(lambda x : x.replace(' ',''))
+
+    data['time'] = data['time'].apply(lambda x : extract_time(time_format_1,x))
+    data['time'] = pd.to_datetime(data['time'], format='%H:%M:%S')
+    
+    return data
+    
+## IMP - Process Emoticons, better stopwords list, clean hashtags
+# Tweet NLP
+
+manual_stopwords_list = ['rt']
+
+# stopwords list based on pos tags
+
+from nltk.tag import StanfordPOSTagger
+
+jar = JAR_FILE
+model = MODEL_FILE
+
+st = StanfordPOSTagger(model, jar, encoding='utf8')
+
+remove_tags_stanfordpos = ['IN','DT','PRP','PRP$','WDT','WP','WP$','CD','PDT']
+remove_tags_tweetnlp = []
+
+
+def tweet_tag_filter(x):
+    pass
+
+
+# obama_data['text'] = obama_data['text'].apply(tweet_tag_filter)
+# romney_data['text'] = romney_data['text'].apply(tweet_tag_filter)
+
+
+def pos_tag_filter(x):
+    x = x.split()
+    s = st.tag(x)
+    for i,(_,tag) in enumerate(s):
+        if tag in remove_tags_stanfordpos:
+            x[i] = ''
+    return ''.join(x)
+    
+
+# obama_data['text'] = obama_data['text'].apply(pos_tag_filter)
+# romney_data['text'] = romney_data['text'].apply(pos_tag_filter)
+
+# remove stopwords
+
+
+stopwords_list = stopwords.words('english') + manual_stopwords_list
+
+# stemming
+class Tokenizer(object):
+    def __init__(self):
+        self.wnl = WordNetLemmatizer()
+    def __call__(self, doc):
+        return [self.wnl.lemmatize(t) for t in word_tokenize(doc)]
+                
+            
+def get_X_y(data):
+    return data['text'],data['sentiment'].astype(int)
+
+
+
+
+VALIDATION_SPLIT = .60
+
+texts = obama_data['text']
+labels = obama_data['sentiment']
+
+tokenizer = keras.preprocessing.text.Tokenizer(nb_words=MAX_NB_WORDS)
+tokenizer.fit_on_texts(texts)
+sequences = tokenizer.texts_to_sequences(texts)
+
+word_index = tokenizer.word_index #key = word, value = number
+print('Found %s unique tokens.' % len(word_index))
+
+#pad the data 
+data = pad_sequences(sequences, maxlen=MAX_SEQUENCE_LENGTH)
+
+labels = keras.utils.np_utils.to_categorical(np.asarray(labels))
+print('Shape of data tensor:', data.shape)
+print('Shape of label tensor:', labels.shape)
+
+# split the data into a training set and a validation set
+indices = np.arange(data.shape[0])
+np.random.shuffle(indices)
+data = data[indices]
+labels = labels[indices]
+nb_validation_samples = int(VALIDATION_SPLIT * data.shape[0])
+
+
+
+x_train = data[:-nb_validation_samples]
+y_train = labels[:-nb_validation_samples]
+x_val = data[-nb_validation_samples:]
+y_val = labels[-nb_validation_samples:]
+
+
+
+
+embeddings_index = {}
+f = open(GLOVE_FILE)
+for line in f:
+    values = line.split()
+    word = values[0]
+    coefs = np.asarray(values[1:], dtype='float32')
+    embeddings_index[word] = coefs
+f.close()
+
+print('Found %s word vectors.' % len(embeddings_index))
+
+#prepare embedding matrix
+
+#num_words = min(MAX_NB_WORDS, len(word_index))
+num_words = len(word_index)+1
+embedding_matrix = np.zeros((len(word_index) + 1, EMBEDDING_DIM))
+for word, i in word_index.items():
+    embedding_vector = embeddings_index.get(word)
+    if embedding_vector is not None:
+        # words not found in embedding index will be all-zeros.
+        embedding_matrix[i] = embedding_vector
+
+embedding_layer = Embedding(num_words,
+                            EMBEDDING_DIM,
+                            weights=[embedding_matrix],
+                            input_length=MAX_SEQUENCE_LENGTH,
+                            trainable=False)
+
+
+# create the model
+model = Sequential()
+model.add(embedding_layer)
+model.add(LSTM(100))
+model.add(Dense(len(y_train[0]), activation='softmax'))
+model.compile(loss='categorical_crossentropy', optimizer='adam')
+model.fit(x_train, y_train, nb_epoch=30, batch_size=64)
+
+model_predictions = model.predict(x_val)
+y_pred = np.zeros(len(y_val))
+y_true = np.zeros(len(y_val))
+errors = 0.0
+for i in range(len(y_val)):
+    y_pred[i] = np.argmax(model_predictions[i])
+    y_true[i] = np.argmax(y_val[i])
+    if y_true[i] != y_pred[i]:
+        errors+=1.0
+          
+       
+print classification_report(y_true,y_pred)
+print 1.0-errors/len(y_val)
+
+
+
+
