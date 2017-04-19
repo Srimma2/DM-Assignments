@@ -45,7 +45,7 @@ TWITTER_FILE = '/Users/nookiebiz4/583_proj2/training-Obama-Romney-tweets.xlsx'
 JAR_FILE = '/Users/nookiebiz4/Downloads/stanford-postagger-2016-10-31/stanford-postagger.jar'
 MODEL_FILE = '/Users/nookiebiz4/Downloads/stanford-postagger-2016-10-31/models/english-left3words-distsim.tagger'
 TOKENIZER = 'keras' #or use nltk
-STEMMER = 'wordnet'
+STEMMER = 'wordnet' #or use snowball or porter
 
 
 def get_Ytrue_Ypred(model,x,y):
