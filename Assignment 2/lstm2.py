@@ -44,6 +44,8 @@ EMBEDDING_DIM = 100 #size of word vector
 TWITTER_FILE = '/Users/nookiebiz4/583_proj2/training-Obama-Romney-tweets.xlsx'
 JAR_FILE = '/Users/nookiebiz4/Downloads/stanford-postagger-2016-10-31/stanford-postagger.jar'
 MODEL_FILE = '/Users/nookiebiz4/Downloads/stanford-postagger-2016-10-31/models/english-left3words-distsim.tagger'
+TOKENIZER = 'keras' #or use nltk
+STEMMER = 'wordnet'
 
 
 def get_Ytrue_Ypred(model,x,y):
@@ -278,7 +280,7 @@ tokenizer.fit_on_texts(texts)
 sequences = tokenizer.texts_to_sequences(texts) #list of lists, basically replaces each word with number
 
 tokens = []
-myTokenizer = Tokenizer('wordnet')
+myTokenizer = Tokenizer(STEMMER)
 for i in range(0,len(texts)):
     try:
         tokens.append(myTokenizer.__call__(texts[i]))
@@ -302,6 +304,9 @@ for i in range(0,len(tokens)):
 word_index = tokenizer.word_index #key = word, value = number
 #word_index = word_dict
 #sequences = mysequences
+if TOKENIZER == 'nltk':
+    word_index = word_dict
+    sequences = mysequences
 print('Found %s unique tokens.' % len(word_index))
 
 #pad the data 
@@ -388,7 +393,7 @@ for train,test in kf: #do the cross validation
 
 #print classification_report(y_true,y_pred)
 print 'Average f1-score = ', np.mean(np.array(avg_f1))
-print 'Overall Accuracy = ',100.0*np.mean(np.array(avg_acc)),'%'
+#print 'Overall Accuracy = ',100.0*np.mean(np.array(avg_acc)),'%'
 
 #
 #
