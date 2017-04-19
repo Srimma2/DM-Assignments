@@ -388,7 +388,7 @@ for train,test in kf: #do the cross validation
 
 #print classification_report(y_true,y_pred)
 print 'Average f1-score = ', np.mean(np.array(avg_f1))
-#print 'Overall Accuracy = ',100.0*np.mean(np.array(avg_acc)),'%'
+print 'Overall Accuracy = ',100.0*np.mean(np.array(avg_acc)),'%'
 
 #
 #
