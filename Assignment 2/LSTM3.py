@@ -40,11 +40,11 @@ np.random.seed(1)
 
 MAX_SEQUENCE_LENGTH = 30 #max number of sentences in a message
 MAX_NB_WORDS = 20000 #cap vocabulary
-GLOVE_FILE = '/Users/nookiebiz4/Downloads/glove/glove.twitter.27B.200d.txt'
+GLOVE_FILE = 'glove.twitter.27B/glove.twitter.27B.200d.txt'
 EMBEDDING_DIM = 200 #size of word vector 
-TWITTER_FILE = '/Users/nookiebiz4/583_proj2/training-Obama-Romney-tweets.xlsx'
-JAR_FILE = '/Users/nookiebiz4/Downloads/stanford-postagger-2016-10-31/stanford-postagger.jar'
-MODEL_FILE = '/Users/nookiebiz4/Downloads/stanford-postagger-2016-10-31/models/english-left3words-distsim.tagger'
+TWITTER_FILE = 'training-Obama-Romney-tweets.xlsx'
+JAR_FILE = '/home/sreeraj/stanford-postagger-2016-10-31/stanford-postagger.jar'
+MODEL_FILE = '/home/sreeraj/stanford-postagger-2016-10-31/models/english-left3words-distsim.tagger'
 TOKENIZER = 'keras' #or use nltk
 STEMMER = 'wordnet'
 
@@ -85,15 +85,15 @@ romney_data = get_data(romney_data)
 
 obama_dataO = copy.deepcopy(obama_data)
 
-print obama_data.head()
-print romney_data.head()
+# print obama_data.head()
+# print romney_data.head()
 
 
 emoticon_dictionary = {':)':' smileyface ','(:':' smileyface ','XD': ' happyface ',':D': ' smileyface ','>.<':' smileyface ',':-)':' smileyface ',';)':' winkface ',';D':' winkface ',':\'(':' cryingface '}
 
 emoticons = [':\)','\(:','XD',':D','>\.<',':-\)',';\)',';D',':\'\(']
 
-emoticon_pattern = re.compile(r'(' + '\s+|\s+'.join(emoticons) + r')')
+emoticon_pattern = re.compile(r'(' + '\s*|\s*'.join(emoticons) + r')')
 
 # convert emoticons to words
 def emoticon_converter(x):
@@ -118,10 +118,8 @@ def separate_hashtag(x):
 
 
 
-
-
 # remove punctuations
-punc = ['\:','\;','\?','\$','\.','\(','\)','\#',',','-']
+punc = ['\:','\;','\?','\$','\.','\(','\)','\#',',','-','\<','\>','\%','\*']
 cond_1 = re.compile('|'.join(punc))
 # remove tags
 tags = ['<a>','</a>','<e>','</e>']
@@ -129,14 +127,14 @@ cond_2 = re.compile("|".join(tags))
 
 def preprocess(data):
     """ preprocess the data"""
-    # remove punctuations
-    data = data.apply(lambda x : re.sub(cond_1,'',x))
-    # remove tags
-    data = data.apply(lambda x : re.sub(cond_2,'',x))
     # remove users
     data = data.apply(lambda x : re.sub(r'\@\s?\w+','',x))
     # remove hypertext 
     data = data.apply(lambda x : re.sub(r"http\S+",'',x)) #edited 
+    # remove tags
+    data = data.apply(lambda x : re.sub(cond_2,'',x))
+    # remove punctuations
+    data = data.apply(lambda x : re.sub(cond_1,'',x))
     # remove digits
     data = data.apply(lambda x : re.sub(r'[0-9]+','',x))
     # convert to ascii
@@ -152,102 +150,11 @@ obama_data['text'] = preprocess(obama_data['text'])
 romney_data['text'] = preprocess(romney_data['text'])
 
 
-def process_time(data):
-    """ processes time """
-
-    def extract_date(pattern,string):
-        temp = re.match(pattern,string)
-        if temp:
-            return temp.group(1)
-        else:
-            return string
-    # clean date
-    date_format_1 = re.compile('\d+/(\d{2})/\d+')
-    date_format_2 = re.compile('\d+\-\d+\-(\d{2})')
-    date_format_3 = re.compile('(\d{2})\-[a-zA-Z]+\-\d+')
-    date_format = [date_format_1] + [date_format_2] + [date_format_3]
-
-    # remove whitespace
-    data['date'] = data['date'].apply(lambda x : x.replace(' ',''))
-
-    for i in date_format:
-        data['date'] = data['date'].apply(lambda x: extract_date(i,x))
-
-    def converter(first,second):
-        if first == 'AM':
-            return second
-        else:
-            val = re.findall('(\d{1,2})',second)[0]
-            if int(val) > 12:
-                val = str(int(val) + 12)
-            return re.sub('\d{1,2}',val,second,1)
-
-    def extract_time(pattern,string):
-
-        temp = re.match(pattern,string)
-        if temp:
-            first = temp.group(1)
-            second = temp.group(2)
-            third = temp.group(3)
-
-            if first is None and third is None:
-                return second
-
-            if first == 'AM' or first == 'PM':
-                return converter(first,second)
-            else:
-                return converter(third,second)
-
-    # clean time
-    time_format_1 = re.compile('(AM|PM)?\s?(\d{1,2}:\d{1,2}:\d{1,2})\s?(AM|PM)?')
-
-    # remove whitespace
-    data['time'] = data['time'].apply(lambda x : x.replace(' ',''))
-
-    data['time'] = data['time'].apply(lambda x : extract_time(time_format_1,x))
-    data['time'] = pd.to_datetime(data['time'], format='%H:%M:%S')
-    
-    return data
     
 ## IMP - Process Emoticons, better stopwords list, clean hashtags
 # Tweet NLP
 
-manual_stopwords_list = ['rt']
-
-# stopwords list based on pos tags
-
-from nltk.tag import StanfordPOSTagger
-
-jar = JAR_FILE
-model = MODEL_FILE
-
-st = StanfordPOSTagger(model, jar, encoding='utf8')
-
-remove_tags_stanfordpos = ['IN','DT','PRP','PRP$','WDT','WP','WP$','CD','PDT']
-remove_tags_tweetnlp = []
-
-
-def tweet_tag_filter(x):
-    pass
-
-
-# obama_data['text'] = obama_data['text'].apply(tweet_tag_filter)
-# romney_data['text'] = romney_data['text'].apply(tweet_tag_filter)
-
-
-def pos_tag_filter(x):
-    x = x.split()
-    s = st.tag(x)
-    for i,(_,tag) in enumerate(s):
-        if tag in remove_tags_stanfordpos:
-            x[i] = ''
-    return ''.join(x)
-    
-
-# obama_data['text'] = obama_data['text'].apply(pos_tag_filter)
-# romney_data['text'] = romney_data['text'].apply(pos_tag_filter)
-
-# remove stopwords
+manual_stopwords_list = ['RT']
 
 
 stopwords_list = stopwords.words('english') + manual_stopwords_list
@@ -273,8 +180,8 @@ def get_X_y(data):
     return data['text'],data['sentiment'].astype(int)
 
 
-texts = obama_data['text']
-labels = np.array(obama_data['sentiment'])
+texts = romney_data['text']
+labels = np.array(romney_data['sentiment'])
 
 tokenizer = keras.preprocessing.text.Tokenizer(nb_words=MAX_NB_WORDS)
 tokenizer.fit_on_texts(texts)
@@ -308,17 +215,17 @@ word_index = tokenizer.word_index #key = word, value = number
 if TOKENIZER == 'nltk':
     word_index = word_dict
     sequences = mysequences
-print('Found %s unique tokens.' % len(word_index))
+# print('Found %s unique tokens.' % len(word_index))
 
 #pad the data 
 data = pad_sequences(sequences, maxlen=MAX_SEQUENCE_LENGTH)
-print labels[0:4]
+# print labels[0:4]
 Y = labels
 labels = keras.utils.np_utils.to_categorical(labels,nb_classes=3)
-print labels[0:4]
+# print labels[0:4]
 
-print('Shape of data tensor:', data.shape)
-print('Shape of label tensor:', labels.shape)
+# print('Shape of data tensor:', data.shape)
+# print('Shape of label tensor:', labels.shape)
 
 
 
@@ -395,7 +302,7 @@ for train,test in kf: #do the cross validation
     model.fit(x_train, y_train, nb_epoch=25, batch_size=64,verbose=0) #ep = 20 .5979
     y_true,y_pred = get_Ytrue_Ypred(model,x_val,y_val)
     avg_acc.append(accuracy_score(y_true,y_pred))
-    avg_f1.append(f1_score(y_true,y_pred,average='binary'))      
+    avg_f1.append(f1_score(y_true,y_pred,average='macro'))      
     print classification_report(y_true,y_pred)
     precision, recall, fscore, support = score(y_true, y_pred)
     f_pos.append(fscore[2])
