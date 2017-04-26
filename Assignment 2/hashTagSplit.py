@@ -65,7 +65,7 @@ def split_hashtag(x):
         return x
     a = split_hashtag_to_words_all_possibilities(x) # all possibilities
     if not a: #if it can't parse just return it
-        return unicode('#+'+x)
+        return unicode('') 
     argC = {} #otherwise return the longest set of n parsed words
     for i in range(0,len(a)):
         argC[len(a[i])] = i
