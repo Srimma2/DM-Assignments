@@ -1,0 +1,227 @@
+Obama
+
+*All
+
+Classifier - Naive_Bayes
+accuracy is 0.592761835131
+             precision    recall  f1-score   support
+
+         -1       0.56      0.72      0.63      1922
+          0       0.57      0.49      0.53      1896
+          1       0.68      0.56      0.61      1653
+
+avg / total       0.60      0.59      0.59      5471
+
+Classifier - Linear_SVM
+accuracy is 0.583988301956
+             precision    recall  f1-score   support
+
+         -1       0.58      0.66      0.61      1922
+          0       0.54      0.55      0.54      1896
+          1       0.67      0.54      0.59      1653
+
+avg / total       0.59      0.58      0.58      5471
+
+GRU
+Average f1-score =  0.481626308617
+Overall Accuracy =  50.3041241315 %
+positive f1-score =  0.553891634017
+negative f1-score =  0.562264827362
+positive precision =  0.439424963098
+negative precision =  0.575499178073
+positive recall =  0.755021514236
+negative recall =  0.553066829004
+
+*Emoticon converter
+
+Classifier - Naive_Bayes
+accuracy is 0.592396271248
+             precision    recall  f1-score   support
+
+         -1       0.56      0.72      0.63      1922
+          0       0.57      0.49      0.53      1896
+          1       0.68      0.56      0.61      1653
+
+avg / total       0.60      0.59      0.59      5471
+
+Classifier - Linear_SVM (decreased)
+accuracy is 0.580149881192
+             precision    recall  f1-score   support
+
+         -1       0.58      0.66      0.61      1922
+          0       0.53      0.55      0.54      1896
+          1       0.65      0.53      0.58      1653
+
+avg / total       0.59      0.58      0.58      5471
+
+GRU (decreased)
+Average f1-score =  0.465852693899
+Overall Accuracy =  48.9688187174 %
+positive f1-score =  0.548794458532
+negative f1-score =  0.533826076556
+positive precision =  0.425241065291
+negative precision =  0.563562023374
+positive recall =  0.779838872105
+negative recall =  0.510892857143
+
+*Hashtag separator (capitals)
+
+Classifier - Naive_Bayes 
+accuracy is 0.591665143484
+             precision    recall  f1-score   support
+
+         -1       0.56      0.71      0.63      1922
+          0       0.57      0.50      0.53      1896
+          1       0.68      0.56      0.61      1653
+
+avg / total       0.60      0.59      0.59      5471
+
+Classifier - Linear_SVM (decreased)
+accuracy is 0.578139279839
+             precision    recall  f1-score   support
+
+         -1       0.56      0.65      0.60      1922
+          0       0.53      0.55      0.54      1896
+          1       0.67      0.53      0.59      1653
+
+avg / total       0.59      0.58      0.58      5471
+
+GRU
+Average f1-score =  0.456228919225
+Overall Accuracy =  49.0410093938 %
+positive f1-score =  0.554330218264
+negative f1-score =  0.561525521217
+positive precision =  0.423472884234
+negative precision =  0.586666442447
+positive recall =  0.805831731209
+negative recall =  0.541567911255
+
+*Hashtag separator (DP) (with)
+
+Classifier - Naive_Bayes
+accuracy is 0.583988301956
+             precision    recall  f1-score   support
+
+         -1       0.56      0.71      0.63      1922
+          0       0.56      0.47      0.51      1896
+          1       0.65      0.57      0.61      1653
+
+avg / total       0.59      0.58      0.58      5471
+
+Classifier - Linear_SVM (decreased)
+accuracy is 0.573386949369
+             precision    recall  f1-score   support
+
+         -1       0.56      0.64      0.60      1922
+          0       0.52      0.55      0.54      1896
+          1       0.67      0.53      0.59      1653
+
+avg / total       0.58      0.57      0.57      5471
+
+GRU (decreased)
+Average f1-score =  0.471801541879
+Overall Accuracy =  49.8267161382 %
+positive f1-score =  0.559444067301
+negative f1-score =  0.551999455497
+positive precision =  0.433680164527
+negative precision =  0.585336650368
+positive recall =  0.796164057493
+negative recall =  0.529614448052
+
+
+*Stopword Removal POS tag (with)
+
+Classifier - Naive_Bayes (increased)
+accuracy is 0.591847925425
+             precision    recall  f1-score   support
+
+         -1       0.57      0.72      0.64      1922
+          0       0.57      0.48      0.52      1896
+          1       0.66      0.57      0.61      1653
+
+avg / total       0.60      0.59      0.59      5471
+
+Classifier - Linear_SVM
+accuracy is 0.581063790897
+             precision    recall  f1-score   support
+
+         -1       0.56      0.66      0.61      1922
+          0       0.54      0.55      0.54      1896
+          1       0.68      0.53      0.59      1653
+
+avg / total       0.59      0.58      0.58      5471
+
+GRU (decreased)
+Average f1-score =  0.464881989285
+Overall Accuracy =  49.0766374863 %
+positive f1-score =  0.549006909289
+negative f1-score =  0.54513620576
+positive precision =  0.423691235264
+negative precision =  0.600009989083
+positive recall =  0.794377002655
+negative recall =  0.511405573593
+
+*Stopwords List (with)
+
+Classifier - Naive_Bayes (decreased)
+accuracy is 0.58307439225
+             precision    recall  f1-score   support
+
+         -1       0.58      0.69      0.63      1922
+          0       0.55      0.48      0.51      1896
+          1       0.62      0.58      0.60      1653
+
+avg / total       0.58      0.58      0.58      5471
+
+Classifier - Linear_SVM (decreased)
+accuracy is 0.571010784135
+             precision    recall  f1-score   support
+
+         -1       0.57      0.64      0.60      1922
+          0       0.52      0.54      0.53      1896
+          1       0.64      0.53      0.58      1653
+
+avg / total       0.57      0.57      0.57      5471
+
+GRU (decreased)
+Average f1-score =  0.464881989285
+Overall Accuracy =  49.0766374863 %
+positive f1-score =  0.549006909289
+negative f1-score =  0.54513620576
+positive precision =  0.423691235264
+negative precision =  0.600009989083
+positive recall =  0.794377002655
+negative recall =  0.511405573593
+
+*Lowercase
+
+Classifier - Naive_Bayes (increased)
+accuracy is 0.591847925425
+             precision    recall  f1-score   support
+
+         -1       0.57      0.72      0.64      1922
+          0       0.57      0.48      0.52      1896
+          1       0.66      0.57      0.61      1653
+
+avg / total       0.60      0.59      0.59      5471
+
+Classifier - Linear_SVM
+accuracy is 0.581246572839
+             precision    recall  f1-score   support
+
+         -1       0.57      0.65      0.61      1922
+          0       0.53      0.55      0.54      1896
+          1       0.67      0.53      0.59      1653
+
+avg / total       0.59      0.58      0.58      5471
+
+GRU (decreased)
+Average f1-score =  0.464881989285
+Overall Accuracy =  49.0766374863 %
+positive f1-score =  0.549006909289
+negative f1-score =  0.54513620576
+positive precision =  0.423691235264
+negative precision =  0.600009989083
+positive recall =  0.794377002655
+negative recall =  0.511405573593
+
