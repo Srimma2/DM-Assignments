@@ -1,0 +1,9 @@
+Romney report
+Overall Accuracy is 0.638421052632
+             precision    recall  f1-score   support
+
+         -1    0.66806   0.83229   0.74119       960
+          0    0.59118   0.36216   0.44916       555
+          1    0.58516   0.55325   0.56876       385
+
+avg / total    0.62880   0.63842   0.62095      1900

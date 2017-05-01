@@ -1,0 +1,11 @@
+Obama report
+Overall Accuracy is 0.590978985136
+             precision    recall  f1-score   support
+
+         -1    0.61528   0.63227   0.62366       688
+          0    0.56105   0.53304   0.54669       681
+          1    0.59464   0.60997   0.60221       582
+
+avg / total    0.59019   0.59098   0.59039      1951
+
+
